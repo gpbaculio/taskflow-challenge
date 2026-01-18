@@ -29,13 +29,26 @@ export default function Dashboard() {
     { name: "Pink", value: "#ec4899" },
   ];
 
+  const [error, setError] = useState<string | null>(null);
+
   const fetchBoards = async () => {
     try {
+      setError(null);
       const res = await fetch("/api/boards");
+      if (!res.ok) {
+        throw new Error(`Server returned ${res.status}`);
+      }
       const data = await res.json();
-      setBoards(data);
+      if (Array.isArray(data)) {
+        setBoards(data);
+      } else {
+        throw new Error("Invalid data format from server");
+      }
     } catch (error) {
       console.error("Error fetching boards:", error);
+      setError(
+        "Failed to load dashboards. Please check your database connection.",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -66,7 +79,8 @@ export default function Dashboard() {
   const deleteBoard = async (e: React.MouseEvent, id: number) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!confirm("Are you sure? This will delete all tasks in this board.")) return;
+    if (!confirm("Are you sure? This will delete all tasks in this board."))
+      return;
 
     try {
       const res = await fetch(`/api/boards/${id}`, { method: "DELETE" });
@@ -87,7 +101,9 @@ export default function Dashboard() {
       <div className="flex justify-between items-center mb-12">
         <div>
           <h1 className="text-4xl font-bold tracking-tight mb-2">My Boards</h1>
-          <p className="text-zinc-400">Manage your projects and tasks with ease.</p>
+          <p className="text-zinc-400">
+            Manage your projects and tasks with ease.
+          </p>
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
@@ -101,8 +117,22 @@ export default function Dashboard() {
       {isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-44 rounded-2xl bg-white/5 animate-pulse" />
+            <div
+              key={i}
+              className="h-44 rounded-2xl bg-white/5 animate-pulse"
+            />
           ))}
+        </div>
+      ) : error ? (
+        <div className="flex flex-col items-center justify-center h-64 border-2 border-red-500/20 bg-red-500/5 rounded-3xl p-8 text-center">
+          <p className="text-red-400 font-medium mb-2">Something went wrong</p>
+          <p className="text-zinc-500 text-sm max-w-md">{error}</p>
+          <button
+            onClick={() => fetchBoards()}
+            className="mt-4 text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-300 px-4 py-2 rounded-lg transition-colors"
+          >
+            Try Again
+          </button>
         </div>
       ) : boards.length === 0 ? (
         <div className="flex flex-col items-center justify-center h-64 border-2 border-dashed border-white/10 rounded-3xl">
@@ -126,18 +156,22 @@ export default function Dashboard() {
                 </button>
               </div>
               <div>
-                <h3 className="text-xl font-bold mb-2 group-hover:text-violet-400 transition-colors">{board.name}</h3>
-                <p className="text-zinc-400 line-clamp-2 text-sm">{board.description || "No description"}</p>
+                <h3 className="text-xl font-bold mb-2 group-hover:text-violet-400 transition-colors">
+                  {board.name}
+                </h3>
+                <p className="text-zinc-400 line-clamp-2 text-sm">
+                  {board.description || "No description"}
+                </p>
               </div>
               <div className="text-xs text-zinc-500">
                 Created {new Date(board.createdAt).toLocaleDateString()}
               </div>
-              <div 
-                className="absolute bottom-0 left-0 h-1 w-full opacity-20 group-hover:opacity-100 transition-opacity" 
-                style={{ 
-                  background: board.color 
-                    ? `linear-gradient(90deg, ${board.color}, ${board.color}88)` 
-                    : 'linear-gradient(45deg, #7c3aed, #db2777)' 
+              <div
+                className="absolute bottom-0 left-0 h-1 w-full opacity-20 group-hover:opacity-100 transition-opacity"
+                style={{
+                  background: board.color
+                    ? `linear-gradient(90deg, ${board.color}, ${board.color}88)`
+                    : "linear-gradient(45deg, #7c3aed, #db2777)",
                 }}
               />
             </Link>
@@ -152,7 +186,9 @@ export default function Dashboard() {
             <form onSubmit={createBoard}>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-zinc-400 mb-1.5">Board Name</label>
+                  <label className="block text-sm font-medium text-zinc-400 mb-1.5">
+                    Board Name
+                  </label>
                   <input
                     autoFocus
                     required
@@ -164,7 +200,9 @@ export default function Dashboard() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-zinc-400 mb-1.5">Description (Optional)</label>
+                  <label className="block text-sm font-medium text-zinc-400 mb-1.5">
+                    Description (Optional)
+                  </label>
                   <textarea
                     rows={3}
                     value={description}
@@ -174,7 +212,9 @@ export default function Dashboard() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-zinc-400 mb-2.5">Theme Color</label>
+                  <label className="block text-sm font-medium text-zinc-400 mb-2.5">
+                    Theme Color
+                  </label>
                   <div className="flex flex-wrap gap-3">
                     {colors.map((c) => (
                       <button
@@ -182,7 +222,9 @@ export default function Dashboard() {
                         type="button"
                         onClick={() => setSelectedColor(c.value)}
                         className={`w-10 h-10 rounded-full border-2 transition-all ${
-                          selectedColor === c.value ? "scale-110 border-white shadow-lg shadow-white/10" : "border-transparent opacity-60 hover:opacity-100"
+                          selectedColor === c.value
+                            ? "scale-110 border-white shadow-lg shadow-white/10"
+                            : "border-transparent opacity-60 hover:opacity-100"
                         }`}
                         style={{ backgroundColor: c.value }}
                         title={c.name}

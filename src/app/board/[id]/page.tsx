@@ -55,12 +55,18 @@ export default function BoardDetail() {
   const fetchBoard = useCallback(async () => {
     try {
       const res = await fetch(`/api/boards/${id}`);
-      if (!res.ok) throw new Error("Board not found");
+      if (!res.ok) {
+        throw new Error(`Board not found (Status: ${res.status})`);
+      }
       const data = await res.json();
       setBoard(data);
     } catch (error) {
-      console.error(error);
-      router.push("/");
+      console.error("Error fetching board:", error);
+      // Only redirect if it's a 404, otherwise we might see a flash of redirect
+      // For 500s, we'll just stay on the loading state or show nothing (board is null)
+      if (error instanceof Error && error.message.includes("404")) {
+        router.push("/");
+      }
     } finally {
       setIsLoading(false);
     }
