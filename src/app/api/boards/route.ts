@@ -7,14 +7,11 @@ export async function GET() {
       orderBy: { createdAt: "desc" },
     });
     return NextResponse.json(boards);
-  } catch (error: any) {
-    console.error("Prisma Error (GET /api/boards):", {
-      message: error.message,
-      code: error.code,
-      meta: error.meta,
-    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown error";
+    console.error("Prisma Error (GET /api/boards):", error);
     return NextResponse.json(
-      { error: "Internal Server Error", details: error.message },
+      { error: "Internal Server Error", details: message },
       { status: 500 },
     );
   }
@@ -38,14 +35,11 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json(board, { status: 201 });
-  } catch (error: any) {
-    console.error("Prisma Error (POST /api/boards):", {
-      message: error.message,
-      code: error.code,
-      meta: error.meta,
-    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown error";
+    console.error("Prisma Error (POST /api/boards):", error);
     return NextResponse.json(
-      { error: "Internal Server Error", details: error.message },
+      { error: "Internal Server Error", details: message },
       { status: 500 },
     );
   }

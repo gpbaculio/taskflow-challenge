@@ -23,32 +23,35 @@ A premium, glassmorphic task management system built with Next.js and Prisma. Or
    npm install
    ```
 
-3. **Environment Variables**:
-   Create a `.env` file in the root directory and add your database connection string:
+3. **Database Setup**:
+   You have two options for the database:
 
-   ```env
-   # For Local SQLite:
-   # DATABASE_URL="file:./dev.db"
+   ### Option A: Use PostgreSQL (Recommended for Testers)
 
-   # For Production PostgreSQL (Supabase):
-   DATABASE_URL="postgresql://postgres.[PROJ-ID]:[PASSWORD]@[HOST]:6543/postgres?pgbouncer=true"
-   DIRECT_URL="postgresql://postgres.[PROJ-ID]:[PASSWORD]@[HOST]:5432/postgres"
-   ```
+   The project is pre-configured for PostgreSQL (Supabase/Neon).
+   1. Create a `.env` file and add your connection strings:
+      ```env
+      DATABASE_URL="postgresql://postgres.[PROJ-ID]:[PASSWORD]@[HOST]:6543/postgres?pgbouncer=true"
+      DIRECT_URL="postgresql://postgres.[PROJ-ID]:[PASSWORD]@[HOST]:5432/postgres"
+      ```
+   2. Run `npx prisma db push` to sync the schema.
 
-4. **Set up the database**:
+   ### Option B: Switch to Local SQLite
 
-   ```bash
-   npx prisma db push
-   ```
+   If you want to test without a cloud database, you must modify the code:
+   1. In `prisma/schema.prisma`, change `provider = "postgresql"` to `provider = "sqlite"`.
+   2. **Delete** the `directUrl = env("DIRECT_URL")` line from the `datasource db` block in `schema.prisma`.
+   3. Update `.env` to: `DATABASE_URL="file:./dev.db"`.
+   4. Run `npx prisma db push`.
 
-5. **Run the application**:
+4. **Run the application**:
 
    ```bash
    npm run dev
    ```
 
-6. **Open in browser**:
-   Navigate to [http://localhost:3000](http://localhost:3000) to see the app in action.
+5. **Open in browser**:
+   Navigate to [http://localhost:3000](http://localhost:3000).
 
 ## Tech Stack
 

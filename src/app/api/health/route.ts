@@ -16,17 +16,13 @@ export async function GET() {
       database: "Connected",
       env: process.env.NODE_ENV,
     });
-  } catch (error: any) {
-    console.error("Database Health Check Failed:", {
-      message: error.message,
-      code: error.code,
-      meta: error.meta,
-      maskedUrl: maskedUrl,
-    });
+  } catch (error) {
+    const errorMsg = error instanceof Error ? error.message : "Unknown error";
+    console.error("Database Health Check Failed:", error);
     return NextResponse.json(
       {
         status: "Unhealthy",
-        error: error.message,
+        error: errorMsg,
         diagnostics: {
           urlFormat: maskedUrl,
           message: "Check Vercel Logs for full Prisma error details",
