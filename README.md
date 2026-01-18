@@ -1,36 +1,68 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# TaskFlow | Modern Task Management
 
-## Getting Started
+A premium, glassmorphic task management system built with Next.js and Prisma. Organize your projects with multiple boards, task priorities, and real-time status updates.
 
-First, run the development server:
+## Requirements
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Node.js**: v18.17 or higher
+- **Package Manager**: npm (or yarn/pnpm)
+- **Database**: PostgreSQL (Supabase/Neon) or SQLite for local development
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Setup & Installation
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. **Clone the repository**:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+   ```bash
+   git clone https://github.com/gpbaculio/taskflow-challenge.git
+   cd emerald-omega
+   ```
 
-## Learn More
+2. **Install dependencies**:
 
-To learn more about Next.js, take a look at the following resources:
+   ```bash
+   npm install
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3. **Environment Variables**:
+   Create a `.env` file in the root directory and add your database connection string:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+   ```env
+   # For Local SQLite:
+   # DATABASE_URL="file:./dev.db"
 
-## Deploy on Vercel
+   # For Production PostgreSQL (Supabase):
+   DATABASE_URL="postgresql://postgres.[PROJ-ID]:[PASSWORD]@[HOST]:6543/postgres?pgbouncer=true"
+   DIRECT_URL="postgresql://postgres.[PROJ-ID]:[PASSWORD]@[HOST]:5432/postgres"
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+4. **Set up the database**:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+   ```bash
+   npx prisma db push
+   ```
+
+5. **Run the application**:
+
+   ```bash
+   npm run dev
+   ```
+
+6. **Open in browser**:
+   Navigate to [http://localhost:3000](http://localhost:3000) to see the app in action.
+
+## Tech Stack
+
+- **Framework**: Next.js 15+ (App Router)
+- **Language**: TypeScript
+- **ORM**: Prisma
+- **Database**: PostgreSQL (via Supabase)
+- **Styling**: Tailwind CSS 4.0
+- **Icons**: Lucide React
+- **Hosting**: Vercel
+
+## Key Features
+
+- **Glassmorphic UI**: Modern, translucent design with smooth transitions.
+- **Dynamic Board Management**: Create, customize, and delete project boards.
+- **Advanced Task Logic**: Filter tasks by status and sort by priority or creation date.
+- **Health Diagnostics**: Built-in `/api/health` endpoint for verifying database connectivity.
